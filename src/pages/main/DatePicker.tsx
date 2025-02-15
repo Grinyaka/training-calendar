@@ -11,7 +11,7 @@ const Wrapper = styled.div`
 
   padding: 10px;
 
-  overflow-y: scroll;
+  max-width: 1400px;
 
   @media (max-width: 900px) {
     grid-template-columns: repeat(5, 1fr);

@@ -5,9 +5,7 @@ export const PageContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 1400px;
   
-  overflow: hidden;
-
   flex-grow: 1;
+  overflow-y: scroll;
 `

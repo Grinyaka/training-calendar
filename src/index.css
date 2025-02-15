@@ -5,6 +5,10 @@ html {
   height: 100dvh;
 }
 
+* {
+  box-sizing: border-box;
+}
+
 :root {
   --font-small: 12px;
   --font-medium: 16px;

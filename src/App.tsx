@@ -14,9 +14,8 @@ function App() {
       <BrowserRouter>
         <Menu />
         <Routes>
-          <Route path="/" element={<MainPage />}>
-            <Route path="/:date" element={<DatePage />} />
-          </Route>
+          <Route path="/" element={<MainPage />} />
+          <Route path="/:date" element={<DatePage />} />
           <Route path="/activities" element={<ActivitiesPage />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/goals" element={<GoalsPage />} />
