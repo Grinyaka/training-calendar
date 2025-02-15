@@ -1,8 +1,11 @@
+import { PageContainer } from '../../components/PageContainer'
+import DatePicker from './DatePicker'
+
 const MainPage = () => {
   return (
-    <>
-      <h1>Main page</h1>
-    </>
+    <PageContainer>
+      <DatePicker />
+    </PageContainer>
   )
 }
 
