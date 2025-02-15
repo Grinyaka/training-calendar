@@ -1,6 +1,8 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
+import { useMainStore } from '../../store'
+import { shallow, useShallow } from 'zustand/shallow'
 
 const Wrapper = styled.div`
   display: grid;

@@ -3,6 +3,7 @@ import {PageContainer} from '../../../components/PageContainer'
 import {DateData} from '../../../models/DateData'
 import {Activity} from '../../../models/Activity'
 import styled from 'styled-components'
+import { useMainStore } from '../../../store'
 
 const Wrapper = styled(PageContainer)`
   align-items: start;
@@ -12,7 +13,7 @@ const Wrapper = styled(PageContainer)`
   gap: 15px;
 `
 const TestData: DateData = {
-  dateString: '20230101',
+  day: 1,
   activities: [
     {
       name: 'Activity 1',
@@ -85,7 +86,6 @@ const Notes = styled.div`
 `
 const DatePage = () => {
   const {date} = useParams()
-
   return (
     <Wrapper>
       <Title>{date}</Title>
