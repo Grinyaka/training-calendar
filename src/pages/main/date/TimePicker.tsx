@@ -40,6 +40,8 @@ const MenuDropdown = styled.div`
   overflow-y: scroll;
   width: fit-content;
 
+  z-index: 10;
+
   display: flex;
   flex-direction: column;
 `
