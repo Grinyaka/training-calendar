@@ -72,6 +72,7 @@ const DateActivity = styled.div`
 `
 
 const DatePicker = () => {
+  const monthData = useMainStore((state) => state.monthData)
   const dates = Array.from({length: 31}, (_, i) => i + 1)
   return (
     <Wrapper>
@@ -79,11 +80,10 @@ const DatePicker = () => {
         <DayBtn key={date} to={`/${date}`}>
           <DateTitle>{date}</DateTitle>
           <DateActivity>
-            <span>Activity 1</span>
-            <span>Activity 2</span>
-            <span>Activity 3</span>
-            <span>Activity 4</span>
-            <span>...</span>
+            {monthData[date - 1]?.activities.length &&
+              monthData[date - 1]?.activities.map((activity) => (
+                <span key={activity.name}>{activity.name}</span>
+              ))}
           </DateActivity>
         </DayBtn>
       ))}

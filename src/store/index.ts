@@ -8,18 +8,27 @@ const LOCAL_STORAGE_NAME = '{month}_monthData'
 interface MainData {
   monthData: DateData[]
   currentMonth: number
+  dayData?: DateData
 
   actions: {
     setMonthData: (data: DateData[]) => void
     getMothData: () => DateData[]
     addActivity: ({activity, day}: {activity: Activity; day: number}) => void
     addNotes: ({day, notes}: {day: number; notes: string}) => void
+    setDayData: (day?: number) => void
   }
 }
 
-export const useMainStore = create<MainData>()((set, get) => ({
+const DEFAULT_PROPS = {
   monthData: [],
   currentMonth: new Date().getMonth(),
+  dayData: undefined,
+}
+
+export const useMainStore = create<MainData>()((set, get) => ({
+  monthData: DEFAULT_PROPS.monthData,
+  currentMonth: DEFAULT_PROPS.currentMonth,
+  dayData: DEFAULT_PROPS.dayData,
   actions: {
     getMothData: (): DateData[] => {
       const currentMonth = get().currentMonth
@@ -27,10 +36,10 @@ export const useMainStore = create<MainData>()((set, get) => ({
         `${LOCAL_STORAGE_NAME.replace('{month}', currentMonth.toString())}`,
       )
       if (!data) return []
-      const json: Map<number, JsonObject<DateData>[]> = new Map(JSON.parse(data))
-      const result = json.get(currentMonth)
+      const json: JsonObject<DateData>[] = JSON.parse(data)
+      const result = json.map(DateData.valueOfJson)
       if (!result) return []
-      set({monthData: result.map(DateData.valueOfJson)})
+      set({monthData: result})
       return result
     },
     setMonthData: (data: DateData[]) => {
@@ -55,9 +64,20 @@ export const useMainStore = create<MainData>()((set, get) => ({
       let currentMonthData = get().monthData
       currentMonthData[day] = {
         ...currentMonthData[day],
-        notes: notes.split('\n').join('\\n'),
+        notes,
       }
       get().actions.setMonthData(currentMonthData)
+    },
+    setDayData: (day?: number) => {
+      if (day === undefined) {
+        return set({dayData: DEFAULT_PROPS.dayData})
+      }
+      const currentMonthData = get().monthData
+      if (!currentMonthData || currentMonthData.length === 0) {
+        const newData = get().actions.getMothData()
+        return set({dayData: newData[day]})
+      }
+      set({dayData: get().monthData[day]})
     },
   },
 }))

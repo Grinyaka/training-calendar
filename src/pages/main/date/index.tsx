@@ -1,9 +1,14 @@
 import {useParams} from 'react-router'
+import styled from 'styled-components'
 import {PageContainer} from '../../../components/PageContainer'
 import {DateData} from '../../../models/DateData'
-import {Activity} from '../../../models/Activity'
-import styled from 'styled-components'
-import { useMainStore } from '../../../store'
+import Notes from './Notes'
+import {useEffect, useState} from 'react'
+import {useMainStore} from '../../../store'
+
+type Props = {
+  dayData: DateData
+}
 
 const Wrapper = styled(PageContainer)`
   align-items: start;
@@ -77,33 +82,42 @@ const DataRow = styled.div`
     white-space: pre-wrap;
   }
 `
-const Notes = styled.div`
-  background-color: ${({theme}) => theme.backgroundColors.card};
-  border-radius: 5px;
 
-  width: 100%;
-  padding: 10px 15px;
-`
 const DatePage = () => {
   const {date} = useParams()
+  const [isLoading, setIsLoading] = useState(true)
+  const {setDayData} = useMainStore((state) => state.actions)
+  const {monthData, dayData} = useMainStore((state) => state)
+  useEffect(() => {
+    setDayData(Number(date) - 1)
+    setIsLoading(false)
+  }, [])
   return (
     <Wrapper>
       <Title>{date}</Title>
-      <DataRow>
-        Time:
-        <span>
-          {TestData.from} - {TestData.to}
-        </span>
-      </DataRow>
-      {TestData.activities.map((activity) => (
-        <DataRow key={activity.name}>
-          {activity.name}:
-          <span>
-            {activity.amount} / {activity.goal}
-          </span>
-        </DataRow>
-      ))}
-      <Notes>{TestData.notes}</Notes>
+      {isLoading ? (
+        <div>Loading...</div>
+      ) : (
+        <>
+          {dayData.from && dayData.to && (
+            <DataRow>
+              Time:
+              <span>
+                {dayData.from} - {dayData.to}
+              </span>
+            </DataRow>
+          )}
+          {dayData.activities.map((activity) => (
+            <DataRow key={activity.name}>
+              {activity.name}:
+              <span>
+                {activity.amount} / {activity.goal}
+              </span>
+            </DataRow>
+          ))}
+          <Notes day={dayData.day - 1} currentNotes={dayData.notes} />
+        </>
+      )}
     </Wrapper>
   )
 }
