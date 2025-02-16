@@ -5,7 +5,7 @@ export class DateData {
   public static valueOfJson(data: JsonObject<DateData>) {
     return new DateData(
       data.day,
-      data.activities,
+      data.activities.map(Activity.valueOfJson),
       data.from,
       data.to,
       data.notes,

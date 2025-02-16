@@ -7,6 +7,7 @@ export type Theme = {
   textColors: {
     primary: string
     secondary: string
+    dark: string
   }
   backgroundColors: {
     primary: string
@@ -14,6 +15,8 @@ export type Theme = {
     card: string
     button: string
     buttonHover: string
+    accent: string
+    negative: string
   }
   fontSizes: {
     small: string

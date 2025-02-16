@@ -1,47 +1,14 @@
 import React, { useState } from 'react'
 import { Activity } from '../../../models/Activity'
 import styled from 'styled-components'
+import AddActivity from './AddActivity'
+import { useStoreMain } from '../../../store'
+import { shallow } from 'zustand/shallow'
 
 type Props = {
-  day: number,
-  currentActivities: Activity[]
+  day: number
 }
 
-const AddActivity = styled.button`
-  all: unset;
-  cursor: pointer;
-
-  padding: 10px 15px;
-  font-size: ${({theme}) => theme.fontSizes.large};
-  color: ${({theme}) => theme.textColors.secondary};
-  font-weight: bold;
-
-  border-radius: 5px;
-  border: 2px solid ${({theme}) => theme.textColors.secondary};
-`
-const AddForm = styled.form`
-  display: flex;
-  flex-wrap: row nowrap;
-  width: 100%;
-`
-const FormCol = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-  color: ${({theme}) => theme.textColors.secondary};
-  font-size: ${({theme}) => theme.fontSizes.medium};
-  &:first-child {
-    flex-grow: 1;
-  }
-`
-const Input = styled.input`
-  all: unset;
-  padding: 5px 10px;
-  border-radius: 5px;
-  border: 2px solid ${({theme}) => theme.textColors.secondary};
-  color: ${({theme}) => theme.textColors.primary};
-  font-size: ${({theme}) => theme.fontSizes.medium};
-`
 const DataRow = styled.div`
   display: flex;
   flex-flow: row nowrap;
@@ -65,32 +32,21 @@ const DataRow = styled.div`
   }
 `
 
-const ActivitiesList = ({day, currentActivities}: Props) => {
-  const [adding, setAdding] = useState(false)
+const ActivitiesList = ({day}: Props) => {
+  const data = useStoreMain((state) => state.dayData)
+  const activities = data.activities
+  if (!activities) return <>Loading...</>
   return (
     <>
-      {currentActivities.map((activity) => (
+      {activities.map((activity) => (
         <DataRow key={activity.name}>
           {activity.name}:
           <span>
-            {activity.amount} / {activity.goal}
+            {activity.amount || 0} / {activity.goal || 0}
           </span>
         </DataRow>
       ))}
-      {adding ? (
-        <AddForm>
-          <FormCol>
-            Activity name
-            <Input type="text" autoCapitalize='on' />
-          </FormCol>
-          <FormCol>
-            From
-            
-          </FormCol>
-        </AddForm>
-      ) : (
-        <AddActivity onClick={() => setAdding(true)}>Add activity +</AddActivity>
-      )}
+      <AddActivity day={day} />
     </>
   )
 }

@@ -5,9 +5,9 @@ import DatePicker from './DatePicker'
 
 
 const MainPage = () => {
-  const {getMothData} = useStoreMain(state => state.actions)
+  const {getMonthData} = useStoreMain((state) => state.actions)
   useEffect(() => {
-    getMothData()
+    getMonthData()
   }, [])
   return (
     <PageContainer>

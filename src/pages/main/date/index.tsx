@@ -54,6 +54,7 @@ const DatePage = () => {
     setDayData(Number(date) - 1)
     setIsLoading(false)
   }, [])
+  
   return (
     <Wrapper>
       <Title>{date}</Title>
@@ -64,7 +65,7 @@ const DatePage = () => {
           <DataRow>
           <TimePicker from={dayData.from} to={dayData.to} />
           </DataRow>
-          <ActivitiesList day={dayData.day - 1} currentActivities={dayData.activities} />
+          <ActivitiesList day={dayData.day - 1} />
           <Notes day={dayData.day - 1} currentNotes={dayData.notes} />
         </>
       )}

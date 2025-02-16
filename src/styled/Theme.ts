@@ -3,14 +3,17 @@ import { Theme } from './types';
 export const MainTheme: Theme = {
   textColors: {
     primary: 'var(--text-primary)',
-    secondary: 'var(--text-secondary)',
+    secondary: '#a2a2a2',
+    dark: '#000000',
   },
   backgroundColors: {
-    primary: 'var(--primary)',
-    secondary: 'var(--secondary)',
-    card: '#3b3b3b',
-    button: '#4d4d4d',
+    primary: '#292929',
+    secondary: '#121212',
+    card: '#1d1d1d',
+    button: '#03dac6',
     buttonHover: '#6d6d6d',
+    accent: '#c38fff',
+    negative: '#ff407f',
   },
   fontSizes: {
     small: 'var(--font-small)',
@@ -18,4 +21,4 @@ export const MainTheme: Theme = {
     large: 'var(--font-large)',
     xlarge: 'var(--font-xlarge)',
   },
-};
+}
