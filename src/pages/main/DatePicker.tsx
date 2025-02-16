@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
-import { useMainStore } from '../../store'
+import { useStoreMain } from '../../store'
 import { shallow, useShallow } from 'zustand/shallow'
 
 const Wrapper = styled.div`
@@ -72,7 +72,7 @@ const DateActivity = styled.div`
 `
 
 const DatePicker = () => {
-  const monthData = useMainStore((state) => state.monthData)
+  const monthData = useStoreMain((state) => state.monthData)
   const dates = Array.from({length: 31}, (_, i) => i + 1)
   return (
     <Wrapper>

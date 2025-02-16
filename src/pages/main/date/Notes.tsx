@@ -1,6 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react'
 import styled from 'styled-components'
-import {useMainStore} from '../../../store'
+import {useStoreMain} from '../../../store'
 import {useDebounce} from '../../../utils/useDebounce'
 
 type Props = {
@@ -79,7 +79,7 @@ const Notes = ({day, currentNotes}: Props) => {
   const preformatRef = useRef<HTMLPreElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const debouncedNotes = useDebounce<string>(newNotes, 1000)
-  const {addNotes} = useMainStore((state) => state.actions)
+  const {addNotes} = useStoreMain((state) => state.actions)
   useEffect(() => {
     addNotes({day, notes: debouncedNotes})
   }, [debouncedNotes])
@@ -127,9 +127,10 @@ const Notes = ({day, currentNotes}: Props) => {
         ref={textareaRef}
         value={newNotes}
         onInput={handleInput}
+        placeholder='Add notes here...'
       />
       <PreformatArea onClick={handlePreFocus} ref={preformatRef}>
-        {newNotes}
+        {newNotes || 'Add notes here...'}
       </PreformatArea>
 
       <TextCounter ref={counterRef}>

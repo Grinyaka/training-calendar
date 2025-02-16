@@ -16,6 +16,7 @@ interface MainData {
     addActivity: ({activity, day}: {activity: Activity; day: number}) => void
     addNotes: ({day, notes}: {day: number; notes: string}) => void
     setDayData: (day?: number) => void
+    setTime: ({time, type}: {time: string; type: 'from' | 'to'}) => void
   }
 }
 
@@ -25,7 +26,7 @@ const DEFAULT_PROPS = {
   dayData: undefined,
 }
 
-export const useMainStore = create<MainData>()((set, get) => ({
+export const useStoreMain = create<MainData>()((set, get) => ({
   monthData: DEFAULT_PROPS.monthData,
   currentMonth: DEFAULT_PROPS.currentMonth,
   dayData: DEFAULT_PROPS.dayData,
@@ -68,6 +69,14 @@ export const useMainStore = create<MainData>()((set, get) => ({
       }
       get().actions.setMonthData(currentMonthData)
     },
+    setTime: ({time, type}: {time: string; type: 'from' | 'to'}) => {
+      let currentMonthData = get().monthData
+      currentMonthData[get().dayData!.day - 1] = {
+        ...currentMonthData[get().dayData!.day - 1],
+        [type]: time,
+      }
+      get().actions.setMonthData(currentMonthData)
+    },
     setDayData: (day?: number) => {
       if (day === undefined) {
         return set({dayData: DEFAULT_PROPS.dayData})
@@ -82,4 +91,4 @@ export const useMainStore = create<MainData>()((set, get) => ({
   },
 }))
 
-export const useMainStoreActions = () => useMainStore((state) => state.actions)
+export const useStoreMainActions = () => useStoreMain((state) => state.actions)

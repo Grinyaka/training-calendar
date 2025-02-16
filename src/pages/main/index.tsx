@@ -1,11 +1,11 @@
 import { useEffect } from 'react'
 import { PageContainer } from '../../components/PageContainer'
-import { useMainStore } from '../../store'
+import { useStoreMain } from '../../store'
 import DatePicker from './DatePicker'
 
 
 const MainPage = () => {
-  const {getMothData} = useMainStore(state => state.actions)
+  const {getMothData} = useStoreMain(state => state.actions)
   useEffect(() => {
     getMothData()
   }, [])

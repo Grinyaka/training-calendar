@@ -1,14 +1,11 @@
 import {useParams} from 'react-router'
 import styled from 'styled-components'
 import {PageContainer} from '../../../components/PageContainer'
-import {DateData} from '../../../models/DateData'
 import Notes from './Notes'
 import {useEffect, useState} from 'react'
-import {useMainStore} from '../../../store'
-
-type Props = {
-  dayData: DateData
-}
+import {useStoreMain} from '../../../store'
+import ActivitiesList from './ActivitiesList'
+import TimePicker from './TimePicker'
 
 const Wrapper = styled(PageContainer)`
   align-items: start;
@@ -17,42 +14,6 @@ const Wrapper = styled(PageContainer)`
   padding: 15px;
   gap: 15px;
 `
-const TestData: DateData = {
-  day: 1,
-  activities: [
-    {
-      name: 'Activity 1',
-      amount: 25,
-      goal: 40,
-      type: 'cardio',
-      bodyPart: 'legs',
-    },
-    {
-      name: 'Activity 2',
-      amount: 30,
-      goal: 30,
-      type: 'cardio',
-      bodyPart: 'core',
-    },
-    {
-      name: 'Activity 3',
-      amount: 3,
-      goal: 13,
-      type: 'strength',
-      bodyPart: 'arms',
-    },
-    {
-      name: 'Activity 4',
-      amount: 10,
-      goal: 25,
-      type: 'strength',
-      bodyPart: 'legs',
-    },
-  ],
-  from: '10:00',
-  to: '11:00',
-  notes: 'Notes',
-}
 const Title = styled.span`
   font-size: ${({theme}) => theme.fontSizes.xlarge};
   color: ${({theme}) => theme.textColors.secondary};
@@ -86,8 +47,9 @@ const DataRow = styled.div`
 const DatePage = () => {
   const {date} = useParams()
   const [isLoading, setIsLoading] = useState(true)
-  const {setDayData} = useMainStore((state) => state.actions)
-  const {monthData, dayData} = useMainStore((state) => state)
+  const {setDayData} = useStoreMain((state) => state.actions)
+  const {dayData} = useStoreMain((state) => state)
+
   useEffect(() => {
     setDayData(Number(date) - 1)
     setIsLoading(false)
@@ -99,22 +61,10 @@ const DatePage = () => {
         <div>Loading...</div>
       ) : (
         <>
-          {dayData.from && dayData.to && (
-            <DataRow>
-              Time:
-              <span>
-                {dayData.from} - {dayData.to}
-              </span>
-            </DataRow>
-          )}
-          {dayData.activities.map((activity) => (
-            <DataRow key={activity.name}>
-              {activity.name}:
-              <span>
-                {activity.amount} / {activity.goal}
-              </span>
-            </DataRow>
-          ))}
+          <DataRow>
+          <TimePicker from={dayData.from} to={dayData.to} />
+          </DataRow>
+          <ActivitiesList day={dayData.day - 1} currentActivities={dayData.activities} />
           <Notes day={dayData.day - 1} currentNotes={dayData.notes} />
         </>
       )}
