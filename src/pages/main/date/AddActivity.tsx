@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { useStoreMain } from '../../../store'
 import { Activity } from '../../../models/Activity'
+import { useStoreMain } from '../../../store'
 
 type Props = {
   day: number
@@ -23,12 +23,20 @@ const Input = styled.input`
   border-radius: 5px;
   border: 2px solid ${({theme}) => theme.textColors.secondary};
   color: ${({theme}) => theme.textColors.primary};
-  font-size: ${({theme}) => theme.fontSizes.medium};
+  font-size: clamp(
+    ${({theme}) => theme.fontSizes.small},
+    3vw,
+    ${({theme}) => theme.fontSizes.medium}
+  );
   flex-grow: 1;
 
   &::placeholder {
     font-weight: bold;
     opacity: 0.5;
+  }
+
+  @media (max-width: 600px) {
+    width: 100%;
   }
 `
 const SubmitButton = styled.button`
@@ -36,7 +44,11 @@ const SubmitButton = styled.button`
   cursor: pointer;
   box-sizing: border-box;
   padding: 10px 15px;
-  font-size: ${({theme}) => theme.fontSizes.large};
+  font-size: clamp(
+    ${({theme}) => theme.fontSizes.small},
+    3vw,
+    ${({theme}) => theme.fontSizes.medium}
+  );
   color: ${({theme}) => theme.textColors.secondary};
   font-weight: bold;
   background-color: ${({theme}) => theme.backgroundColors.accent};
@@ -44,6 +56,10 @@ const SubmitButton = styled.button`
   border: 2px solid transparent;
   color: ${({theme}) => theme.textColors.dark};
   transition: all 0.2s ease-in-out;
+
+  text-transform: uppercase;
+
+  text-align: center;
   &:not(:disabled):hover {
     opacity: 0.8;
   }
@@ -72,7 +88,11 @@ const AddButton = styled.button`
   cursor: pointer;
 
   padding: 10px 15px;
-  font-size: ${({theme}) => theme.fontSizes.large};
+  font-size: clamp(
+    ${({theme}) => theme.fontSizes.small},
+    3vw,
+    ${({theme}) => theme.fontSizes.medium}
+  );
   color: ${({theme}) => theme.textColors.secondary};
   font-weight: bold;
 
@@ -83,7 +103,7 @@ const AddButton = styled.button`
 const AddActivity = ({day}: Props) => {
   const [adding, setAdding] = useState(false)
   const [newActivity, setNewActivity] = useState('')
-  const {addActivity} = useStoreMain(state => state.actions)
+  const {addActivity} = useStoreMain((state) => state.actions)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault()
