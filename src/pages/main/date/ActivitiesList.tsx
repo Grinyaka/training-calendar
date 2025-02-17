@@ -52,8 +52,8 @@ const ActivitiesList = ({day}: Props) => {
   }
   return (
     <>
-      {activities.map((activity) => (
-        <DataRow key={activity.name}>
+      {activities.map((activity, index) => (
+        <DataRow key={activity.name+index}>
           {activity.name}:
           <span>
             {activity.amount || 0} / {activity.goal || 0}

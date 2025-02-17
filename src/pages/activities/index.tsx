@@ -1,7 +1,21 @@
+import { useEffect } from 'react'
+import { useStoreMain, useStoreMainActions } from '../../store'
+
 const ActivitiesPage = () => {
+  const activities = useStoreMain((state) => state.availableActivities)
+  const {getActivitiesList} = useStoreMainActions()
+
+  useEffect(() => {
+    if (activities.length === 0) {
+      getActivitiesList()
+    }
+  }, [])
   return (
     <>
       <h1>Activities page</h1>
+      {activities.map((activity) => (
+        <span key={activity}>{activity}</span>
+      ))}
     </>
   )
 }

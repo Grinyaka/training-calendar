@@ -83,8 +83,8 @@ const DatePicker = () => {
           <DateTitle>{date}</DateTitle>
           <DateActivity>
             {monthData[date - 1]?.activities?.length > 0 &&
-              monthData[date - 1]?.activities?.map((activity) => (
-                <span key={activity.name}>{activity.name}</span>
+              monthData[date - 1]?.activities?.map((activity, index) => (
+                <span key={activity.name+index}>{activity.name}</span>
               ))}
           </DateActivity>
         </DayBtn>
