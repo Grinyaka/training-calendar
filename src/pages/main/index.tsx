@@ -9,6 +9,7 @@ const MainPage = () => {
   useEffect(() => {
     getMonthData()
   }, [])
+  
   return (
     <PageContainer>
       <DatePicker />

@@ -106,7 +106,6 @@ const AddActivity = ({day}: Props) => {
   const {addActivity} = useStoreMain((state) => state.actions)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    e.preventDefault()
     setNewActivity(e.target.value)
   }
   const handleClose = () => {
@@ -117,7 +116,8 @@ const AddActivity = ({day}: Props) => {
   const handleOpen = () => {
     setAdding(true)
   }
-  const handleSubmit = () => {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
     if (newActivity) {
       const newActivityObj = new Activity(newActivity)
       addActivity({day, activity: newActivityObj})

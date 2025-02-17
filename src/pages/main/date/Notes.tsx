@@ -74,14 +74,27 @@ const TextCounter = styled.span`
 const MAX_NOTES_LENGTH = 250
 
 const Notes = ({day, currentNotes}: Props) => {
-  const [newNotes, setNewNotes] = useState(currentNotes)
+  const [newNotes, setNewNotes] = useState(currentNotes || '')
   const counterRef = useRef<HTMLSpanElement>(null)
   const preformatRef = useRef<HTMLPreElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
   const debouncedNotes = useDebounce<string>(newNotes, 1000)
   const {addNotes} = useStoreMain((state) => state.actions)
+
+  const firstRender = useRef(true)
+
   useEffect(() => {
-    addNotes({day, notes: debouncedNotes})
+    if (!firstRender.current) {
+      addNotes({day, notes: debouncedNotes})
+    } else {
+      firstRender.current = false
+    }
+
+    return () => {
+      if (firstRender.current) {
+        firstRender.current = false
+      }
+    }
   }, [debouncedNotes])
 
   const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {

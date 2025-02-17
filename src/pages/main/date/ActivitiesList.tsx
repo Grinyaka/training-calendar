@@ -45,12 +45,11 @@ const DeleteButton = styled.button`
 const ActivitiesList = ({day}: Props) => {
   const data = useStoreMain((state) => state.dayData)
   const {removeActivity} = useStoreMainActions()
-  const activities = data.activities
+  const activities = data?.activities || []
 
   const handleDelete = (activity: Activity) => {
     removeActivity({activity: activity.name, day})
   }
-  if (!activities) return <>Loading...</>
   return (
     <>
       {activities.map((activity) => (

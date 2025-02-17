@@ -24,7 +24,7 @@ interface MainData {
 
 const DEFAULT_PROPS = {
   monthData: [],
-  currentMonth: new Date().getMonth(),
+  currentMonth: new Date().getMonth() + 1,
   dayData: undefined,
 }
 
@@ -40,6 +40,7 @@ export const useStoreMain = create<MainData>((set, get) => ({
       )
       if (!data) return []
       const json: JsonObject<DateData>[] = JSON.parse(data)
+      console.log(json)
       const result = json.map(DateData.valueOfJson)
       if (!result) return []
       set({monthData: result})
@@ -47,6 +48,7 @@ export const useStoreMain = create<MainData>((set, get) => ({
     },
     setMonthData: (data: DateData[]) => {
       const currentMonth = get().currentMonth
+      console.log(data)
       localStorage.setItem(
         `${LOCAL_STORAGE_NAME.replace('{month}', currentMonth.toString())}`,
         JSON.stringify(data),
@@ -58,58 +60,69 @@ export const useStoreMain = create<MainData>((set, get) => ({
       }))
     },
     addNotes: ({day, notes}: {day: number; notes: string}) => {
-      let currentMonthData = [...get().monthData]
-      currentMonthData[day] = {
-        ...currentMonthData[day],
-        notes,
-      }
-      get().actions.setMonthData(currentMonthData)
-      return get().actions.setDayData(day)
+      return set((state) => {
+        const newDayData = {
+          ...state.dayData,
+          notes,
+        }
+        let newMonthData = [...state.monthData]
+        newMonthData[day] = newDayData
+        get().actions.setMonthData(newMonthData)
+        return {dayData: newDayData, monthData: newMonthData}
+      })
     },
     setTime: ({time, type}: {time: string; type: 'from' | 'to'}) => {
-      let currentMonthData = [...get().monthData]
-      const dayData = {...get().dayData!}
-      const currentDay = dayData.day - 1
-      currentMonthData[currentDay] = {
-        ...currentMonthData[currentDay],
-        [type]: time,
-      }
-      get().actions.setMonthData(currentMonthData)
-      return get().actions.setDayData(currentDay)
+      return set((state) => {
+        const newDayData = {
+          ...state.dayData,
+          [type]: time,
+        }
+        let newMonthData = [...state.monthData]
+        newMonthData[newDayData.day - 1] = newDayData
+        get().actions.setMonthData(newMonthData)
+        return {dayData: newDayData, monthData: newMonthData}
+      })
     },
     addActivity: ({activity, day}: {activity: Activity; day: number}) => {
-      let currentMonthData = [...get().monthData]
-      currentMonthData[day] = {
-        ...currentMonthData[day],
-        activities: [...currentMonthData[day].activities, activity],
-      }
-      get().actions.setMonthData(currentMonthData)
-      return get().actions.setDayData(day)
+      set((state) => {
+        const newDayData = {
+          ...state.dayData,
+          activities: [...state.dayData!.activities, activity],
+        }
+        let newMonthData = [...state.monthData]
+        newMonthData[day] = newDayData
+        get().actions.setMonthData(newMonthData)
+        return {dayData: newDayData, monthData: newMonthData}
+      })
     },
     removeActivity: ({activity, day}: {activity: string; day: number}) => {
-      let currentMonthData = [...get().monthData]
-      currentMonthData[day] = {
-        ...currentMonthData[day],
-        activities: currentMonthData[day].activities.filter(
-          (item) => item.name !== activity,
-        ),
-      }
-      get().actions.setMonthData(currentMonthData)
-      return get().actions.setDayData(day)
+      set((state) => {
+        const newDayData = {
+          ...state.dayData,
+          activities: state.dayData.activities.filter((item) => item.name !== activity),
+        }
+        let newMonthData = [...state.monthData]
+        newMonthData[day] = newDayData
+        get().actions.setMonthData(newMonthData)
+        return {dayData: newDayData, monthData: newMonthData}
+      })
     },
     updateActivity: ({activity, day}: {activity: Activity; day: number}) => {
-      let currentMonthData = [...get().monthData]
-      currentMonthData[day] = {
-        ...currentMonthData[day],
-        activities: currentMonthData[day].activities.map((item) => {
-          if (item.name === activity.name) {
-            return activity
-          }
-          return item
-        }),
-      }
-      get().actions.setMonthData(currentMonthData)
-      return get().actions.setDayData(day)
+      set((state) => {
+        const newDayData = {
+          ...state.dayData,
+          activities: state.dayData.activities.map((item) => {
+            if (item.name === activity.name) {
+              return activity
+            }
+            return item
+          }),
+        }
+        let newMonthData = [...state.monthData]
+        newMonthData[day] = newDayData
+        get().actions.setMonthData(newMonthData)
+        return {dayData: newDayData, monthData: newMonthData}
+      })
     },
     setDayData: (day?: number) => {
       if (day === undefined) {
@@ -118,9 +131,17 @@ export const useStoreMain = create<MainData>((set, get) => ({
       const currentMonthData = [...get().monthData]
       if (!currentMonthData || currentMonthData.length === 0) {
         const newData = {...get().actions.getMonthData()}
+        if (!newData[day]) {
+          const emptyDayData = new DateData(day + 1, [])
+          return set((state) => ({dayData: emptyDayData}))
+        }
         return set((state) => ({dayData: newData[day]}))
       }
-      return set({dayData: currentMonthData[day]})
+      const newDayData = DateData.valueOfJson({
+        ...currentMonthData[day],
+        day: day + 1,
+      })
+      return set({dayData: newDayData})
     },
   },
 }))

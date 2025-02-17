@@ -2,10 +2,11 @@ import { JsonObject } from '../utils/JsonObject'
 import { Activity } from './Activity'
 
 export class DateData {
-  public static valueOfJson(data: JsonObject<DateData>) {
+  public static valueOfJson(data?: JsonObject<DateData>) {
+    if (!data) return
     return new DateData(
       data.day,
-      data.activities.map(Activity.valueOfJson),
+      data.activities?.map(Activity.valueOfJson) || [],
       data.from,
       data.to,
       data.notes,

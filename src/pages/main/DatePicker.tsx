@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { useStoreMain } from '../../store'
 import { shallow, useShallow } from 'zustand/shallow'
+import moment from 'moment'
 
 const Wrapper = styled.div`
   display: grid;
@@ -73,15 +74,16 @@ const DateActivity = styled.div`
 
 const DatePicker = () => {
   const monthData = useStoreMain((state) => state.monthData)
-  const dates = Array.from({length: 31}, (_, i) => i + 1)
+  const daysInMonth = moment().daysInMonth()
+  const dates = Array.from({length: daysInMonth}, (_, i) => i + 1)
   return (
     <Wrapper>
       {dates.map((date) => (
         <DayBtn key={date} to={`/${date}`}>
           <DateTitle>{date}</DateTitle>
           <DateActivity>
-            {monthData[date - 1]?.activities.length &&
-              monthData[date - 1]?.activities.map((activity) => (
+            {monthData[date - 1]?.activities?.length > 0 &&
+              monthData[date - 1]?.activities?.map((activity) => (
                 <span key={activity.name}>{activity.name}</span>
               ))}
           </DateActivity>
