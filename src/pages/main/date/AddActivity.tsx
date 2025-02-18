@@ -119,8 +119,7 @@ const AddActivity = ({day}: Props) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (newActivity) {
-      const newActivityObj = new Activity(newActivity)
-      addActivity({day, activity: newActivityObj})
+      addActivity({day, activityName: newActivity})
       handleClose()
     }
   }

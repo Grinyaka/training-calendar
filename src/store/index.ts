@@ -15,8 +15,8 @@ interface MainData {
   actions: {
     getMonthData: () => DateData[]
     setMonthData: (data: DateData[]) => void
-    addActivity: ({activity, day}: {activity: Activity; day: number}) => void
-    removeActivity: ({activity, day}: {activity: string; day: number}) => void
+    addActivity: ({activityName, day}: {activityName: string; day: number}) => void
+    removeActivity: ({activityId, day}: {activityId: number; day: number}) => void
     updateActivity: ({activity, day}: {activity: Activity; day: number}) => void
     addNotes: ({day, notes}: {day: number; notes: string}) => void
     setTime: ({time, type}: {time: string; type: 'from' | 'to'}) => void
@@ -87,27 +87,31 @@ export const useStoreMain = create<MainData>((set, get) => ({
         return {dayData: newDayData, monthData: newMonthData}
       })
     },
-    addActivity: ({activity, day}: {activity: Activity; day: number}) => {
+    addActivity: ({activityName, day}: {activityName: string; day: number}) => {
       set((state) => {
+        const newId = state.dayData?.activities.length
+          ? state.dayData?.activities[state.dayData?.activities?.length - 1].id + 1
+          : 0
+        const newActivity = new Activity(newId, activityName)
         const newDayData = {
           ...state.dayData,
-          activities: [...state.dayData!.activities, activity],
+          activities: [...state.dayData!.activities, newActivity],
         }
         let newMonthData = [...state.monthData]
         newMonthData[day] = newDayData
         get().actions.setMonthData(newMonthData)
-        get().actions.setActivitiesList([...state.availableActivities, activity.name])
+        get().actions.setActivitiesList([...state.availableActivities, newActivity.name])
         return {
           dayData: newDayData,
           monthData: newMonthData,
         }
       })
     },
-    removeActivity: ({activity, day}: {activity: string; day: number}) => {
+    removeActivity: ({activityId, day}: {activityId: number; day: number}) => {
       set((state) => {
         const newDayData = {
           ...state.dayData,
-          activities: state.dayData.activities.filter((item) => item.name !== activity),
+          activities: state.dayData.activities.filter((item) => item.id !== activityId),
         }
         let newMonthData = [...state.monthData]
         newMonthData[day] = newDayData

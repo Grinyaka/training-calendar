@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import AddActivity from './AddActivity'
 import { useStoreMain, useStoreMainActions } from '../../../store'
 import { shallow } from 'zustand/shallow'
+import ActivityAmountInput from './ActivityAmountInput'
 
 type Props = {
   day: number
@@ -40,24 +41,37 @@ const DeleteButton = styled.button`
   font-size: ${({theme}) => theme.fontSizes.small};
   color: ${({theme}) => theme.backgroundColors.negative};
   opacity: 0.4;
+  margin-left: auto;
 `
 
 const ActivitiesList = ({day}: Props) => {
   const data = useStoreMain((state) => state.dayData)
-  const {removeActivity} = useStoreMainActions()
+  const {removeActivity, updateActivity} = useStoreMainActions()
   const activities = data?.activities || []
 
   const handleDelete = (activity: Activity) => {
-    removeActivity({activity: activity.name, day})
+    removeActivity({activityId: activity.id, day})
   }
+  const handleChange = (activity: Activity) => {
+    updateActivity({activity, day})
+  }
+
   return (
     <>
       {activities.map((activity, index) => (
-        <DataRow key={activity.name+index}>
+        <DataRow key={activity.name + index}>
           {activity.name}:
-          <span>
-            {activity.amount || 0} / {activity.goal || 0}
-          </span>
+          <ActivityAmountInput
+            activity={activity}
+            inputType="amount"
+            onChange={handleChange}
+          />
+          /
+          <ActivityAmountInput
+            activity={activity}
+            inputType="goal"
+            onChange={handleChange}
+          />
           <DeleteButton onClick={() => handleDelete(activity)}>Delete</DeleteButton>
         </DataRow>
       ))}
