@@ -22,7 +22,7 @@ interface MainData {
     setTime: ({time, type}: {time: string; type: 'from' | 'to'}) => void
     setDayData: (day?: number) => void
     setActivitiesList: (activities: string[]) => void
-    getActivitiesList: () => void
+    getActivitiesList: () => string[]
   }
 }
 
@@ -100,7 +100,11 @@ export const useStoreMain = create<MainData>((set, get) => ({
         let newMonthData = [...state.monthData]
         newMonthData[day] = newDayData
         get().actions.setMonthData(newMonthData)
-        get().actions.setActivitiesList([...state.availableActivities, newActivity.name])
+        if (state.availableActivities.length === 0) {
+          get().actions.setActivitiesList([...get().actions.getActivitiesList(), newActivity.name])
+        } else {
+          get().actions.setActivitiesList([...state.availableActivities, newActivity.name])
+        }
         return {
           dayData: newDayData,
           monthData: newMonthData,
@@ -162,7 +166,9 @@ export const useStoreMain = create<MainData>((set, get) => ({
     },
     getActivitiesList: () => {
       const data = localStorage.getItem(LOCAL_STORAGE_ACTIVITIES)
-      return set({availableActivities: data ? JSON.parse(data) : []})
+      const response = data ? JSON.parse(data) : []
+      set({availableActivities: response})
+      return response
     },
   },
 }))

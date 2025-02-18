@@ -1,10 +1,8 @@
-import React, { useState } from 'react'
 import { Activity } from '../../../models/Activity'
 import styled from 'styled-components'
 import AddActivity from './AddActivity'
 import { useStoreMain, useStoreMainActions } from '../../../store'
-import { shallow } from 'zustand/shallow'
-import ActivityAmountInput from './ActivityAmountInput'
+import ActivityNoteInput from './ActivityNoteInput'
 
 type Props = {
   day: number
@@ -15,7 +13,7 @@ const DataRow = styled.div`
   flex-flow: row nowrap;
   font-size: clamp(${({theme}) => theme.fontSizes.small}, 3vw, ${({theme}) => theme.fontSizes.medium});
 
-  color: ${({theme}) => theme.textColors.secondary};
+  color: ${({theme}) => theme.textColors.primary};
   font-weight: bold;
   align-items: center;
   gap: 5px;
@@ -61,15 +59,8 @@ const ActivitiesList = ({day}: Props) => {
       {activities.map((activity, index) => (
         <DataRow key={activity.name + index}>
           {activity.name}:
-          <ActivityAmountInput
+          <ActivityNoteInput
             activity={activity}
-            inputType="amount"
-            onChange={handleChange}
-          />
-          /
-          <ActivityAmountInput
-            activity={activity}
-            inputType="goal"
             onChange={handleChange}
           />
           <DeleteButton onClick={() => handleDelete(activity)}>Delete</DeleteButton>

@@ -131,6 +131,7 @@ const AddActivity = ({day}: Props) => {
         type="text"
         autoCapitalize="on"
         placeholder="Activity name"
+        autoFocus
       />
       <SubmitButton disabled={!newActivity} type="submit">
         Add
