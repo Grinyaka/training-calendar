@@ -59,7 +59,7 @@ const DatePage = () => {
   // TODO: add year (not important until 2026)
   const currentDate = `2025-${currentMonth}-${date}`
   const dayOfWeek = moment(currentDate).format('dddd')
-  const month = moment(`2025-${currentMonth}-${date}`).format('MMMM')
+  const month = moment(currentDate).format('MMMM')
 
   useEffect(() => {
     setDayData(Number(date) - 1)
