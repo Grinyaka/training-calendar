@@ -95,9 +95,10 @@ const AddButton = styled.button`
   );
   color: ${({theme}) => theme.textColors.secondary};
   font-weight: bold;
+  color: ${({theme}) => theme.backgroundColors.accent};
 
   border-radius: 5px;
-  border: 2px solid ${({theme}) => theme.textColors.secondary};
+  border: 2px solid ${({theme}) => theme.backgroundColors.accent};
 `
 
 const AddActivity = ({day}: Props) => {

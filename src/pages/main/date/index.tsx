@@ -48,6 +48,10 @@ const DataRow = styled.div`
     white-space: pre-wrap;
   }
 `
+const StyledHr = styled.hr`
+  width: 80%;
+  border: 1px solid ${({theme}) => theme.textColors.secondary};
+`
 
 const DatePage = () => {
   const {date} = useParams()
@@ -78,6 +82,8 @@ const DatePage = () => {
           <DataRow>
             <TimePicker from={dayData.from} to={dayData.to} />
           </DataRow>
+          <StyledHr />
+          <DataRow>Activities:</DataRow>
           <ActivitiesList day={dayData.day - 1} />
           <Notes day={dayData.day - 1} currentNotes={dayData.notes} />
         </>

@@ -24,6 +24,12 @@ const MenuLink = styled(Link)<{$isActive: boolean}>`
   max-width: 300px;
   width: 100%;
   height: 100%;
+  font-weight: bold;
+  font-size: clamp(
+    ${({theme}) => theme.fontSizes.small},
+    3.5vw,
+    ${({theme}) => theme.fontSizes.medium}
+  );
 
   color: ${({theme, $isActive}) =>
     $isActive ? theme.textColors.primary : theme.textColors.secondary};
@@ -53,12 +59,6 @@ const Menu = () => {
       </MenuLink>
       <MenuLink $isActive={checkActive('/activities')} to="/activities">
         Activities
-      </MenuLink>
-      <MenuLink $isActive={checkActive('/goals')} to="/goals">
-        Goals
-      </MenuLink>
-      <MenuLink $isActive={checkActive('/profile')} to="/profile">
-        Profile
       </MenuLink>
     </Wrapper>
   )
