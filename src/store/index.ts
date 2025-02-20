@@ -1,7 +1,7 @@
-import {create} from 'zustand'
-import {DateData} from '../models/DateData'
-import {Activity} from '../models/Activity'
-import {JsonObject} from '../utils/JsonObject'
+import { create } from 'zustand'
+import { Activity } from '../models/Activity'
+import { DateData } from '../models/DateData'
+import { JsonObject } from '../utils/JsonObject'
 
 const LOCAL_STORAGE_NAME = '{month}_monthData'
 const LOCAL_STORAGE_ACTIVITIES = 'availableActivities'
@@ -21,8 +21,8 @@ interface MainData {
     addNotes: ({day, notes}: {day: number; notes: string}) => void
     setTime: ({time, type}: {time: string; type: 'from' | 'to'}) => void
     setDayData: (day?: number) => void
-    setActivitiesList: (activities: string[]) => void
-    getActivitiesList: () => string[]
+    deleteAvailableActivity: (activity: string) => void
+    getAvailableActivities: () => string[]
   }
 }
 
@@ -33,7 +33,7 @@ const DEFAULT_PROPS = {
   availableActivities: [],
 }
 
-export const useStoreMain = create<MainData>((set, get) => ({
+export const useStoreMain = create<MainData>()((set, get) => ({
   monthData: DEFAULT_PROPS.monthData,
   currentMonth: DEFAULT_PROPS.currentMonth,
   dayData: DEFAULT_PROPS.dayData,
@@ -101,9 +101,16 @@ export const useStoreMain = create<MainData>((set, get) => ({
         newMonthData[day] = newDayData
         get().actions.setMonthData(newMonthData)
         if (state.availableActivities.length === 0) {
-          get().actions.setActivitiesList([...get().actions.getActivitiesList(), newActivity.name])
+          set({
+            availableActivities: [
+              ...get().actions.getAvailableActivities(),
+              newActivity.name,
+            ],
+          })
         } else {
-          get().actions.setActivitiesList([...state.availableActivities, newActivity.name])
+          set({
+            availableActivities: [...state.availableActivities, newActivity.name],
+          })
         }
         return {
           dayData: newDayData,
@@ -159,16 +166,17 @@ export const useStoreMain = create<MainData>((set, get) => ({
       })
       return set({dayData: newDayData})
     },
-    setActivitiesList: (activities: string[]) => {
-      const newList = Array.from(new Set(activities))
-      localStorage.setItem(LOCAL_STORAGE_ACTIVITIES, JSON.stringify(newList))
-      return set({availableActivities: newList})
-    },
-    getActivitiesList: () => {
+    getAvailableActivities: () => {
       const data = localStorage.getItem(LOCAL_STORAGE_ACTIVITIES)
       const response = data ? JSON.parse(data) : []
       set({availableActivities: response})
       return response
+    },
+    deleteAvailableActivity: (activity: string) => {
+      const storeData = [...get().availableActivities]
+      const newResponse = storeData.filter((item: string) => item !== activity)
+      localStorage.setItem(LOCAL_STORAGE_ACTIVITIES, JSON.stringify(newResponse))
+      set({availableActivities: newResponse})
     },
   },
 }))
