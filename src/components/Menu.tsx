@@ -55,7 +55,7 @@ const Menu = () => {
   return (
     <Wrapper>
       <MenuLink $isActive={checkActive('/')} to="/">
-        Home
+        Calendar
       </MenuLink>
       <MenuLink $isActive={checkActive('/activities')} to="/activities">
         Activities
