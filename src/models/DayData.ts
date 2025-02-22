@@ -7,9 +7,9 @@ export interface SimpleActivity {
   bodyPart?: ActivityPart
 }
 
-export class CalendarData {
-  public static valueOfJson(data: JsonObject<CalendarData>) {
-    return new CalendarData(data.date, data.time, data.activities || [], data.notes)
+export class DayData {
+  public static valueOfJson(data: JsonObject<DayData>) {
+    return new DayData(data.date, data.time, data.activities || [], data.notes)
   }
 
   public readonly date: string
