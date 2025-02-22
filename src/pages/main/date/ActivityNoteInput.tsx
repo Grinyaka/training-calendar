@@ -13,7 +13,8 @@ const Input = styled.input`
 
   border-bottom: 2px solid ${({theme}) => theme.textColors.secondary};
   flex-grow: 1;
-  padding: 5px;
+  padding: 0 5px;
+  min-width: 150px;
   font-size: clamp(
     ${({theme}) => theme.fontSizes.small},
     3vw,

@@ -1,7 +1,7 @@
-import { create } from 'zustand'
-import { Activity } from '../models/Activity'
-import { DateData } from '../models/DateData'
-import { JsonObject } from '../utils/JsonObject'
+import {create} from 'zustand'
+import {Activity} from '../models/Activity'
+import {DateData} from '../models/DateData'
+import {JsonObject} from '../utils/JsonObject'
 
 const LOCAL_STORAGE_NAME = '{month}_monthData'
 const LOCAL_STORAGE_ACTIVITIES = 'availableActivities'
@@ -21,6 +21,8 @@ interface MainData {
     addNotes: ({day, notes}: {day: number; notes: string}) => void
     setTime: ({time, type}: {time: string; type: 'from' | 'to'}) => void
     setDayData: (day?: number) => void
+
+    addAvailableActivity: (activity: string) => void
     deleteAvailableActivity: (activity: string) => void
     getAvailableActivities: () => string[]
   }
@@ -100,18 +102,7 @@ export const useStoreMain = create<MainData>()((set, get) => ({
         let newMonthData = [...state.monthData]
         newMonthData[day] = newDayData
         get().actions.setMonthData(newMonthData)
-        if (state.availableActivities.length === 0) {
-          set({
-            availableActivities: [
-              ...get().actions.getAvailableActivities(),
-              newActivity.name,
-            ],
-          })
-        } else {
-          set({
-            availableActivities: [...state.availableActivities, newActivity.name],
-          })
-        }
+        get().actions.addAvailableActivity(activityName)
         return {
           dayData: newDayData,
           monthData: newMonthData,
@@ -165,6 +156,13 @@ export const useStoreMain = create<MainData>()((set, get) => ({
         day: day + 1,
       })
       return set({dayData: newDayData})
+    },
+
+    addAvailableActivity: (activity: string) => {
+      let storeData = [...get().availableActivities]
+      storeData = Array.from(new Set([activity, ...storeData]))
+      localStorage.setItem(LOCAL_STORAGE_ACTIVITIES, JSON.stringify(storeData))
+      set({availableActivities: storeData})
     },
     getAvailableActivities: () => {
       const data = localStorage.getItem(LOCAL_STORAGE_ACTIVITIES)
