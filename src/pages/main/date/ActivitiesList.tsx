@@ -15,6 +15,7 @@ const ActivityElement = styled.div`
   color: ${({theme}) => theme.textColors.primary};
   font-weight: bold;
   align-items: center;
+  justify-content: space-between;
   gap: 5px;
   padding: 5px;
 
@@ -31,11 +32,6 @@ const ActivityElement = styled.div`
     word-wrap: break-word;
     white-space: pre-wrap;
   }
-
-  @media (max-width: 600px) {
-    flex-direction: column;
-    align-items: start;
-  }
 `
 
 const DeleteButton = styled.button`
@@ -49,7 +45,6 @@ const DeleteButton = styled.button`
   text-align: center;
   color: ${({theme}) => theme.backgroundColors.negative};
   opacity: 0.4;
-  margin-left: auto;
   border: 2px solid ${({theme}) => theme.backgroundColors.negative};
   border-radius: 5px;
 `
@@ -67,7 +62,7 @@ const ActivitiesList = ({day}: Props) => {
     <>
       {activities.map((activity, index) => (
         <ActivityElement key={activity.name + index}>
-          {activity.name}:
+          {activity.name}
           <DeleteButton onClick={() => handleDelete(activity)}>X</DeleteButton>
         </ActivityElement>
       ))}

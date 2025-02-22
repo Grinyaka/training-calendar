@@ -5,10 +5,12 @@ import DatePicker from './DatePicker'
 
 
 const MainPage = () => {
+  const currentMonth = useStoreMain((state) => state.currentMonth)
+  
   const {getMonthData} = useStoreMain((state) => state.actions)
   useEffect(() => {
     getMonthData()
-  }, [])
+  }, [currentMonth])
   
   return (
     <PageContainer>
