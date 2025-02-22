@@ -71,7 +71,7 @@ const TextCounter = styled.span`
   color: ${({theme}) => theme.textColors.secondary};
 `
 
-const MAX_NOTES_LENGTH = 250
+const MAX_NOTES_LENGTH = 500
 
 const Notes = ({day, currentNotes}: Props) => {
   const [newNotes, setNewNotes] = useState(currentNotes || '')

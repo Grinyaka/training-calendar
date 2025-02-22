@@ -17,7 +17,6 @@ interface MainData {
     setMonthData: (data: DateData[]) => void
     addActivity: ({activityName, day}: {activityName: string; day: number}) => void
     removeActivity: ({activityId, day}: {activityId: number; day: number}) => void
-    updateActivity: ({activity, day}: {activity: Activity; day: number}) => void
     addNotes: ({day, notes}: {day: number; notes: string}) => void
     setTime: ({time, type}: {time: string; type: 'from' | 'to'}) => void
     setDayData: (day?: number) => void
@@ -111,26 +110,10 @@ export const useStoreMain = create<MainData>()((set, get) => ({
     },
     removeActivity: ({activityId, day}: {activityId: number; day: number}) => {
       set((state) => {
+        console.log(state.dayData.activities, activityId, day)
         const newDayData = {
           ...state.dayData,
           activities: state.dayData.activities.filter((item) => item.id !== activityId),
-        }
-        let newMonthData = [...state.monthData]
-        newMonthData[day] = newDayData
-        get().actions.setMonthData(newMonthData)
-        return {dayData: newDayData, monthData: newMonthData}
-      })
-    },
-    updateActivity: ({activity, day}: {activity: Activity; day: number}) => {
-      set((state) => {
-        const newDayData = {
-          ...state.dayData,
-          activities: state.dayData.activities.map((item) => {
-            if (item.name === activity.name) {
-              return activity
-            }
-            return item
-          }),
         }
         let newMonthData = [...state.monthData]
         newMonthData[day] = newDayData

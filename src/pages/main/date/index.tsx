@@ -53,23 +53,6 @@ const StyledHr = styled.hr`
   width: 80%;
   border: 1px solid ${({theme}) => theme.textColors.secondary};
 `
-const DataList = styled.datalist`
-  display: flex;
-  flex-direction: column;
-  gap:2px;
-  max-height: 200px;
-  overflow-y: scroll;
-
-  &>option {
-    color: ${({theme}) => theme.textColors.primary};
-    font-size: clamp(
-      ${({theme}) => theme.fontSizes.small},
-      3vw,
-      ${({theme}) => theme.fontSizes.medium}
-    );
-
-  }
-`
 
 const DatePage = () => {
   const {date} = useParams()
@@ -112,11 +95,11 @@ const DatePage = () => {
           <DataRow>Activities:</DataRow>
           <ActivitiesList day={dayData.day - 1} />
           <Notes day={dayData.day - 1} currentNotes={dayData.notes} />
-          <DataList id="activitiesList">
+          <datalist id="activitiesList">
             {availableActivities.map((activity) => (
               <option key={activity}>{activity}</option>
-            ))}  
-          </DataList>
+            ))}
+          </datalist>
         </>
       )}
     </Wrapper>
