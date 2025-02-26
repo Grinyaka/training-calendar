@@ -4,7 +4,12 @@ import { Activity } from './Activity'
 
 export class DayData {
   public static valueOfJson(data: JsonObject<DayData>) {
-    return new DayData(data.date, data.time, data.activities || [], data.notes)
+    return new DayData(
+      data.date,
+      data.time,
+      data.activities.map(Activity.valueOfJson) || [],
+      data.notes,
+    )
   }
 
   public readonly date: string

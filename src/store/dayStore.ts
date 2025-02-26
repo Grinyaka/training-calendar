@@ -1,8 +1,8 @@
 import { create } from 'zustand'
+import { shallow } from 'zustand/shallow'
+import { Activity } from '../models/Activity'
 import { DayData } from '../models/DayData'
 import { useStoreMonth } from './calendarStore'
-import { Activity } from '../models/Activity'
-import { shallow } from 'zustand/shallow'
 
 interface StoreData {
   isLoading: boolean
@@ -13,7 +13,7 @@ interface StoreData {
 
   actions: {
     fetchDayData: (date: string) => void
-    
+
     setTime: (time: string) => void
     setNotes: (notes: string) => void
     removeActivity: (activity: Activity) => void
@@ -25,7 +25,7 @@ const DEFAULT_PROPS: Omit<StoreData, 'actions'> = {
   data: undefined,
   isLoading: false,
   error: undefined,
-  currentFormValues: undefined
+  currentFormValues: undefined,
 }
 
 export const useStoreDay = create<StoreData>()((set, get) => ({
@@ -53,22 +53,27 @@ export const useStoreDay = create<StoreData>()((set, get) => ({
       }
     },
     setTime: (time: string) => {
-      set(state => ({currentFormValues: {...state.currentFormValues, time}}))
+      set((state) => ({currentFormValues: {...state.currentFormValues, time}}))
     },
     setNotes: (notes: string) => {
-      set(state => ({currentFormValues: {...state.currentFormValues, notes}}))
+      set((state) => ({currentFormValues: {...state.currentFormValues, notes}}))
     },
     removeActivity: (activity: Activity) => {
-      const filteredActivities = [...get().currentFormValues.activities].filter(item => !shallow(item, activity))
+      const filteredActivities = [...get().currentFormValues.activities].filter(
+        (item) => !shallow(item, activity),
+      )
       set((state) => ({
         currentFormValues: {...state.currentFormValues, activities: filteredActivities},
       }))
     },
     addActivity: (activity: Activity) => {
       const newActivity = Activity.valueOfJson(activity)
-      
-    } 
+      const newActivities = [...get().currentFormValues.activities, newActivity]
+      set((state) => ({
+        currentFormValues: {...state.currentFormValues, activities: newActivities},
+      }))
+
+      //
+    },
   },
 }))
-
-export const useStoreActionsDay = () => useStoreDay((state) => state.actions)

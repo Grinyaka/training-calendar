@@ -1,7 +1,9 @@
 import { useEffect } from 'react'
-import { useStoreMain, useStoreMainActions } from '../../store'
 import styled from 'styled-components'
 import { PageContainer } from '../../components/PageContainer'
+import { useStoreDay } from '../../store/dayStore'
+import { useStoreActivities } from '../../store/activitiesStore'
+import { Activity } from '../../models/Activity'
 
 const ActivityList = styled.div`
   display: flex;
@@ -45,16 +47,16 @@ const DeleteButton = styled.button`
 `
 
 const ActivitiesPage = () => {
-  const activities = useStoreMain((state) => state.availableActivities)
-  const {getAvailableActivities, deleteAvailableActivity} = useStoreMainActions()
+  const activities = useStoreActivities((state) => state.data)
+  const {fetchAvailableActivities, removeAvailableActivity} = useStoreActivities(state => state.actions)
 
-  const handleDelete = (activity: string) => {
-    deleteAvailableActivity(activity)
+  const handleDelete = (activity: Activity) => {
+    removeAvailableActivity(activity)
   }
 
   useEffect(() => {
     if (activities.length === 0) {
-      getAvailableActivities()
+      fetchAvailableActivities()
     }
   }, [])
   return (
@@ -63,8 +65,8 @@ const ActivitiesPage = () => {
       <ActivityList>
         {activities.length === 0 && <span>No activities added yet</span>}
         {activities.map((activity) => (
-          <ActivityItem key={activity}>
-            <span>{activity}</span>
+          <ActivityItem key={activity.name}>
+            <span>{activity.name}</span>
             <DeleteButton onClick={() => handleDelete(activity)}>Delete</DeleteButton>
           </ActivityItem>
         ))}
