@@ -1,11 +1,6 @@
 import moment from 'moment'
 import { JsonObject } from '../utils/JsonObject'
-import { ActivityCategory, ActivityPart } from './types'
-
-export interface SimpleActivity {
-  category: ActivityCategory
-  bodyPart?: ActivityPart
-}
+import { Activity } from './Activity'
 
 export class DayData {
   public static valueOfJson(data: JsonObject<DayData>) {
@@ -14,7 +9,7 @@ export class DayData {
 
   public readonly date: string
   public readonly time: string
-  public readonly activities: SimpleActivity[]
+  public readonly activities: Activity[]
   public readonly notes: string
 
   public readonly separatedDate: {
@@ -24,12 +19,7 @@ export class DayData {
     weekday: string
   }
 
-  public constructor(
-    date: string,
-    time: string,
-    activities: SimpleActivity[],
-    notes: string,
-  ) {
+  public constructor(date: string, time: string, activities: Activity[], notes: string) {
     this.time = time
     this.activities = activities
     this.notes = notes

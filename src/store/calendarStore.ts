@@ -1,15 +1,12 @@
-import {create} from 'zustand'
-import {Activity} from '../models/Activity'
-import {DateData} from '../models/DateData'
-import {JsonObject} from '../utils/JsonObject'
-import {DayData} from '../models/DayData'
 import moment from 'moment'
+import { create } from 'zustand'
+import { DayData } from '../models/DayData'
+import { JsonObject } from '../utils/JsonObject'
 
 const LOCAL_STORAGE_DATA = 'mainData'
-const LOCAL_STORAGE_ACTIVITIES = 'availableActivities'
 
 interface StoreData {
-  data: Map<number, DayData>
+  data: Map<string, DayData>
   totalDays: number
   currentMonth: number
   isLoading: boolean
@@ -30,7 +27,7 @@ const DEFAULT_PROPS: Omit<StoreData, 'actions'> = {
   error: undefined,
 }
 
-export const useStoreMain = create<StoreData>()((set, get) => ({
+export const useStoreMonth = create<StoreData>()((set, get) => ({
   ...DEFAULT_PROPS,
   actions: {
     fetchMonthData: () => {
@@ -41,9 +38,9 @@ export const useStoreMain = create<StoreData>()((set, get) => ({
         const result = json.map(DayData.valueOfJson)
         if (!result) return set({isLoading: false})
         const currentMonth = get().currentMonth
-        const filteredMap = result.reduce<[number, DayData][]>((filtered, item) => {
+        const filteredMap = result.reduce<[string, DayData][]>((filtered, item) => {
           if (item.separatedDate.month === currentMonth) {
-            filtered.push([item.separatedDate.day, item])
+            filtered.push([item.date, item])
           }
           return filtered
         }, [])
@@ -58,4 +55,4 @@ export const useStoreMain = create<StoreData>()((set, get) => ({
   },
 }))
 
-export const useStoreActionsMain = () => useStoreMain((state) => state.actions)
+export const useStoreActionsMonth = () => useStoreMonth((state) => state.actions)

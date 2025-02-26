@@ -1,35 +1,18 @@
 import { JsonObject } from '../utils/JsonObject'
+import { ActivityCategory, ActivityPart } from './types'
 
-export interface ActivityInterface {
-  id: number
-  name: string
-  note?: string
-  from?: string
-  to?: string
-}
+export class Activity {
+  static valueOfJson(data: JsonObject<Activity>): Activity {
+    return new Activity(data.name, data.category, data.bodyPart)
+  } 
 
-export class Activity implements ActivityInterface {
-  public static valueOfJson(data: JsonObject<Activity>) {
-    return new Activity(data.id, data.name, data.note, data.from, data.to)
-  }
-
-  readonly id: number
   readonly name: string
-  readonly note?: string
-  readonly from?: string
-  readonly to?: string
+  readonly category: ActivityCategory
+  readonly bodyPart?: ActivityPart
 
-  public constructor(
-    id: number,
-    name: string,
-    note?: string,
-    from?: string,
-    to?: string,
-  ) {
-    this.id = id
+  constructor(name: string, category: ActivityCategory, bodyPart?: ActivityPart) {
     this.name = name
-    this.note = note
-    this.from = from
-    this.to = to
+    this.category = category
+    this.bodyPart = bodyPart
   }
 }

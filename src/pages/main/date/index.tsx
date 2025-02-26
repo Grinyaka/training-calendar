@@ -1,13 +1,12 @@
 import moment from 'moment'
-import {useEffect, useState} from 'react'
-import {useParams} from 'react-router'
+import { useEffect } from 'react'
+import { useParams } from 'react-router'
 import styled from 'styled-components'
-import {PageContainer} from '../../../components/PageContainer'
-import {useStoreMain} from '../../../store'
+import { PageContainer } from '../../../components/PageContainer'
+import { useStoreDay } from '../../../store/dayStore'
 import ActivitiesList from './ActivitiesList'
 import Notes from './Notes'
 import TimePicker from './TimePicker'
-import {useShallow} from 'zustand/shallow'
 
 const Wrapper = styled(PageContainer)`
   align-items: start;
@@ -56,52 +55,32 @@ const StyledHr = styled.hr`
 
 const DatePage = () => {
   const {date} = useParams()
-  const [isLoading, setIsLoading] = useState(true)
-  const {setDayData, getAvailableActivities} = useStoreMain((state) => state.actions)
-  const {dayData, currentMonth, availableActivities} = useStoreMain(
-    useShallow((state) => ({
-      dayData: state.dayData,
-      currentMonth: state.currentMonth,
-      availableActivities: state.availableActivities,
-    })),
-  )
-
-  // TODO: add year (not important until 2026)
-  const currentDate = `2025-${currentMonth}-${date}`
-  const dayOfWeek = moment(currentDate).format('dddd')
-  const month = moment(currentDate).format('MMMM')
+  const {fetchDayData} = useStoreDay((state) => state.actions)
 
   useEffect(() => {
-    setDayData(Number(date) - 1)
-    setIsLoading(false)
-    if (availableActivities.length === 0) {
-      getAvailableActivities()
-    }
+    fetchDayData(date)
+    // if (availableActivities.length === 0) {
+    //   getAvailableActivities()
+    // }
   }, [])
 
   return (
     <Wrapper>
-      <Title>
-        {month} {date}, {dayOfWeek}
-      </Title>
-      {isLoading ? (
-        <div>Loading...</div>
-      ) : (
-        <>
-          <DataRow>
-            <TimePicker from={dayData.from} to={dayData.to} />
-          </DataRow>
-          <StyledHr />
-          <DataRow>Activities:</DataRow>
-          <ActivitiesList day={dayData.day - 1} />
-          <Notes day={dayData.day - 1} currentNotes={dayData.notes} />
-          <datalist id="activitiesList">
-            {availableActivities.map((activity) => (
-              <option key={activity}>{activity}</option>
-            ))}
-          </datalist>
-        </>
-      )}
+      <Title>{moment(date).format('MMMM DD dddd')}</Title>
+      <DataRow>
+        <TimePicker />
+      </DataRow>
+      <StyledHr />
+      <DataRow>Activities:</DataRow>
+      <ActivitiesList />
+      <Notes />
+      {/* {availableActivities.length > 0 && (
+        <datalist id="activitiesList">
+          {availableActivities.map((activity) => (
+            <option key={activity}>{activity}</option>
+          ))}
+        </datalist>
+      )} */}
     </Wrapper>
   )
 }

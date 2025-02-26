@@ -1,8 +1,9 @@
 import moment from 'moment'
+import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
-import { useStoreMain } from '../../store'
-import { useEffect, useRef } from 'react'
+import { useShallow } from 'zustand/shallow'
+import { useStoreMonth } from '../../store/calendarStore'
 
 const Wrapper = styled.div`
   display: grid;
@@ -30,7 +31,7 @@ const Wrapper = styled.div`
     grid-template-rows: repeat(16, 1fr);
   }
 `
-const DayBtn = styled(Link)<{$active: boolean, $isToday: boolean}>`
+const DayBtn = styled(Link)<{$active: boolean; $isToday: boolean}>`
   all: unset;
 
   aspect-ratio: 1;
@@ -42,7 +43,9 @@ const DayBtn = styled(Link)<{$active: boolean, $isToday: boolean}>`
 
   background-color: ${({theme, $active}) =>
     $active ? theme.backgroundColors.card : theme.backgroundColors.secondary};
-  border: 2px solid ${({theme, $isToday}) => $isToday ? theme.backgroundColors.accent : theme.backgroundColors.card};
+  border: 2px solid
+    ${({theme, $isToday}) =>
+      $isToday ? theme.backgroundColors.accent : theme.backgroundColors.card};
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease-in-out;
@@ -82,40 +85,38 @@ const DateActivity = styled.div`
 `
 
 const DatePicker = () => {
-  const monthData = useStoreMain((state) => state.monthData)
-  const currentMonth = useStoreMain((state) => state.currentMonth)
-  const daysInMonth = moment().daysInMonth()
-  const dates = Array.from({length: daysInMonth}, (_, i) => i + 1)
-  const today = moment.now()
+  const {monthData, daysInMonth, currentMonth} = useStoreMonth(
+    useShallow((state) => ({
+      monthData: state.data,
+      daysInMonth: state.totalDays,
+      currentMonth: state.currentMonth,
+    })),
+  )
+
+  const dates = Array.from({length: daysInMonth}, (_, i) => {
+    return moment({year: 2025, month: currentMonth, day: i + 1}).format('YYYY-MM-DD')
+  })
+  const today = moment()
   const wrapperRef = useRef<HTMLDivElement>(null)
 
-  const getCurrentDate = (day: number) => {
-    const date = `2025-${currentMonth}-${day}`
-    const formatted = moment(date).format('DD ddd')
-    return formatted
-  }
-  const checkIfToday = (day: number) => {
-    const date = `2025-${currentMonth}-${day}`
+  const checkIfToday = (date: string) => {
     return moment(date).isSame(today, 'day')
   }
-  const pastCurrentDate = (day: number) => {
-    const date = `2025-${currentMonth}-${day}`
-    return moment(date).isBefore(today) && !checkIfToday(day)
+  const pastCurrentDate = (date: string) => {
+    return moment(date).isBefore(today) && !checkIfToday(date)
   }
-
-
 
   useEffect(() => {
     if (!!wrapperRef.current) {
       const scrollToToday = () => {
-        const todayIndex = dates.findIndex((date) => date === moment().date())
+        const todayIndex = dates.findIndex((date) => moment(today).isSame(date, 'day'))
         const todayElement = wrapperRef.current?.children[todayIndex]
         if (todayElement) {
           todayElement.scrollIntoView({behavior: 'smooth'})
         }
       }
       scrollToToday()
-  }
+    }
   }, [])
 
   return (
@@ -127,11 +128,13 @@ const DatePicker = () => {
           $active={!pastCurrentDate(date)}
           $isToday={checkIfToday(date)}
         >
-          <DateTitle>{getCurrentDate(date)}</DateTitle>
+          <DateTitle>{moment(date).format('DD ddd')}</DateTitle>
           <DateActivity>
-            {monthData[date - 1]?.activities?.length > 0 &&
-              monthData[date - 1]?.activities?.map((activity, index) => (
-                <span key={activity.name + index}>{activity.name}</span>
+            {monthData.has(date) &&
+              monthData.get(date).activities.map((activity, index) => (
+                <span key={activity.category + index}>
+                  {activity.category}:{activity.bodyPart}
+                </span>
               ))}
           </DateActivity>
         </DayBtn>

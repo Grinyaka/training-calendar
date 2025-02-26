@@ -1,16 +1,16 @@
-import { Activity } from '../../../models/Activity'
 import styled from 'styled-components'
+import { Activity } from '../../../models/Activity'
+import { useStoreDay } from '../../../store/dayStore'
 import AddActivity from './AddActivity'
-import { useStoreMain, useStoreMainActions } from '../../../store'
-
-type Props = {
-  day: number
-}
 
 const ActivityElement = styled.div`
   display: flex;
   flex-flow: row nowrap;
-  font-size: clamp(${({theme}) => theme.fontSizes.small}, 3vw, ${({theme}) => theme.fontSizes.medium});
+  font-size: clamp(
+    ${({theme}) => theme.fontSizes.small},
+    3vw,
+    ${({theme}) => theme.fontSizes.medium}
+  );
 
   color: ${({theme}) => theme.textColors.primary};
   font-weight: bold;
@@ -49,13 +49,12 @@ const DeleteButton = styled.button`
   border-radius: 5px;
 `
 
-const ActivitiesList = ({day}: Props) => {
-  const data = useStoreMain((state) => state.dayData)
-  const {removeActivity} = useStoreMainActions()
-  const activities = data?.activities || []
+const ActivitiesList = () => {
+  const activities = useStoreDay((state) => state.currentFormValues.activities)
+  const {removeActivity} = useStoreDay((state) => state.actions)
 
   const handleDelete = (activity: Activity) => {
-    removeActivity({activityId: activity.id, day})
+    removeActivity(activity)
   }
 
   return (
@@ -66,7 +65,7 @@ const ActivitiesList = ({day}: Props) => {
           <DeleteButton onClick={() => handleDelete(activity)}>X</DeleteButton>
         </ActivityElement>
       ))}
-      <AddActivity day={day} />
+      <AddActivity />
     </>
   )
 }

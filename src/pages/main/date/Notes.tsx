@@ -1,12 +1,7 @@
-import React, {useEffect, useRef, useState} from 'react'
+import React, { useRef } from 'react'
 import styled from 'styled-components'
-import {useStoreMain} from '../../../store'
-import {useDebounce} from '../../../utils/useDebounce'
-
-type Props = {
-  day: number
-  currentNotes?: string
-}
+import { useStoreDay } from '../../../store/dayStore'
+import { useDebounce } from '../../../utils/useDebounce'
 
 const Wrapper = styled.div`
   width: 100%;
@@ -73,29 +68,16 @@ const TextCounter = styled.span`
 
 const MAX_NOTES_LENGTH = 500
 
-const Notes = ({day, currentNotes}: Props) => {
-  const [newNotes, setNewNotes] = useState(currentNotes || '')
+const Notes = () => {
+  const currentNotes = useStoreDay((state) => state.currentFormValues.notes)
   const counterRef = useRef<HTMLSpanElement>(null)
   const preformatRef = useRef<HTMLPreElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
-  const debouncedNotes = useDebounce<string>(newNotes, 1000)
-  const {addNotes} = useStoreMain((state) => state.actions)
-
-  const firstRender = useRef(true)
-
-  useEffect(() => {
-    if (!firstRender.current) {
-      addNotes({day, notes: debouncedNotes})
-    } else {
-      firstRender.current = false
-    }
-
-    return () => {
-      if (firstRender.current) {
-        firstRender.current = false
-      }
-    }
-  }, [debouncedNotes])
+  const {setNotes} = useStoreDay((state) => state.actions)
+  const changeNotes = (notes: string) => {
+    setNotes(notes || '')
+  }
+  const debouncedNotesChange = useDebounce(changeNotes, 1000)
 
   const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     let value = e.target.value || ''
@@ -103,7 +85,7 @@ const Notes = ({day, currentNotes}: Props) => {
     if (valueLength >= MAX_NOTES_LENGTH) {
       value = value.slice(0, MAX_NOTES_LENGTH)
     }
-    setNewNotes(value || '')
+    debouncedNotesChange(value)
     if (counterRef.current) {
       counterRef.current.innerText = `${value.length.toString()}/${MAX_NOTES_LENGTH}`
     }
@@ -138,16 +120,16 @@ const Notes = ({day, currentNotes}: Props) => {
       <NotesArea
         onBlur={handleTextBlur}
         ref={textareaRef}
-        value={newNotes}
+        value={currentNotes}
         onInput={handleInput}
-        placeholder='Add notes here...'
+        placeholder="Add notes here..."
       />
       <PreformatArea onClick={handlePreFocus} ref={preformatRef}>
-        {newNotes || 'Add notes here...'}
+        {currentNotes || 'Add notes here...'}
       </PreformatArea>
 
       <TextCounter ref={counterRef}>
-        {newNotes.length}/{MAX_NOTES_LENGTH}
+        {currentNotes.length}/{MAX_NOTES_LENGTH}
       </TextCounter>
     </Wrapper>
   )

@@ -1,11 +1,6 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { Activity } from '../../../models/Activity'
-import { useStoreMain } from '../../../store'
-
-type Props = {
-  day: number
-}
+import { useStoreDay } from '../../../store/dayStore'
 
 const AddForm = styled.form`
   display: flex;
@@ -101,10 +96,10 @@ const AddButton = styled.button`
   border: 2px solid ${({theme}) => theme.backgroundColors.accent};
 `
 
-const AddActivity = ({day}: Props) => {
+const AddActivity = () => {
   const [adding, setAdding] = useState(false)
   const [newActivity, setNewActivity] = useState('')
-  const {addActivity} = useStoreMain((state) => state.actions)
+  const {addActivity} = useStoreDay((state) => state.actions)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewActivity(e.target.value)
@@ -120,7 +115,8 @@ const AddActivity = ({day}: Props) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (newActivity) {
-      addActivity({day, activityName: newActivity})
+      // TODO - add category and body part selector
+      addActivity({name: newActivity, category: 'strength'})
       handleClose()
     }
   }
@@ -133,7 +129,7 @@ const AddActivity = ({day}: Props) => {
         autoCapitalize="on"
         placeholder="Activity name"
         autoFocus
-        list='activitiesList'
+        list="activitiesList"
       />
       <SubmitButton disabled={!newActivity} type="submit">
         Add

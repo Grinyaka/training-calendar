@@ -1,11 +1,7 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import styled from 'styled-components'
-import { useStoreMain } from '../../../store'
+import { useStoreDay } from '../../../store/dayStore'
 
-type Props = {
-  from?: string
-  to?: string
-}
 const Wrapper = styled.div`
   width: fit-content;
   height: fit-content;
@@ -77,24 +73,22 @@ const availableTime = availableHours.flatMap((hour) =>
 )
 
 type MenuType = 'from' | 'to'
-const TimePicker = ({from, to}: Props) => {
+const TimePicker = () => {
+  const time = useStoreDay((state) => state.currentFormValues.time)
   const [fromOpen, setFromOpen] = useState(false)
   const [toOpen, setToOpen] = useState(false)
-
-  const [currentFrom, setCurrentFrom] = useState(from)
-  const [currentTo, setCurrentTo] = useState(to)
+  const [from, to] = time.split('-')
 
   const fromMenuRef = useRef<HTMLDivElement>(null)
   const toMenuRef = useRef<HTMLDivElement>(null)
-  const {setTime} = useStoreMain((state) => state.actions)
+  const {setTime} = useStoreDay((state) => state.actions)
 
   const handleTimeChange = (time: string, type: MenuType) => {
     if (type === 'from') {
-      setCurrentFrom(time)
+      setTime(`${time}-${to}`)
     } else {
-      setCurrentTo(time)
+      setTime(`${from}-${time}`)
     }
-    setTime({time, type})
   }
   const handleOpen = (type: MenuType) => {
     if (type === 'from') {
@@ -141,13 +135,13 @@ const TimePicker = ({from, to}: Props) => {
           onBlur={(e) => handleBlur(e, 'from')}
           onClick={() => handleOpen('from')}
         >
-          {currentFrom || 'Select'} ↓
+          {from} ↓
         </OpenButton>
         {fromOpen && (
           <MenuDropdown ref={fromMenuRef}>
             {availableTime.map((time) => (
               <MenuItem
-                disabled={time === currentFrom}
+                disabled={time === from}
                 key={time}
                 onClick={() => handleClick(time, 'from')}
               >
@@ -160,13 +154,13 @@ const TimePicker = ({from, to}: Props) => {
       -
       <Wrapper>
         <OpenButton onBlur={(e) => handleBlur(e, 'to')} onClick={() => handleOpen('to')}>
-          {currentTo || 'Select'} ↓
+          {to} ↓
         </OpenButton>
         {toOpen && (
           <MenuDropdown ref={toMenuRef}>
             {availableTime.map((time) => (
               <MenuItem
-                disabled={time === currentTo}
+                disabled={time === to}
                 key={time}
                 onClick={() => handleClick(time, 'to')}
               >
